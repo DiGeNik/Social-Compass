@@ -211,7 +211,7 @@
                 "Усещаш ли, че прекарваш повече време с AI, отколкото с реални приятели?", // Оценка на риска от симулация
                 "Отлагаш ли хранене или сън заради дигитални занимания?", // Оценка на загубата на режим
                 "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?", // Оценка на бягство от реалността
-                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
+                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // MODIFIED: Правописна грешка
                 "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?", // Допълнителен въпрос за влияние върху живота
                 "Чувстваш ли, че губиш контрол над времето, което прекарваш дигитално?" // ADDED: 6-ти въпрос
             ];
@@ -258,13 +258,15 @@
 
             // Update UI
             function updateUI() {
-                cortisolLevel.textContent = cortisol;
-                endorphinLevel.textContent = endorphins;
+                // MODIFIED: Use Math.max to display 0 if negative, but DO NOT change the state variable here.
+                // This fixes the bug where an increase from -5 would become 0 instead of 5.
+                cortisolLevel.textContent = Math.max(0, cortisol);
+                endorphinLevel.textContent = Math.max(0, endorphins);
                 timerDisplay.textContent = formatTime(secondsPassed);
                 
-                // Ensure hormone levels don't go below zero
-                if (cortisol < 0) cortisol = 0;
-                if (endorphins < 0) endorphins = 0;
+                // REMOVED the state-changing logic from here:
+                // if (cortisol < 0) cortisol = 0;
+                // if (endorphins < 0) endorphins = 0;
             }
 
             // Format time as MM:SS
@@ -358,6 +360,10 @@
                 cortisol += CORTISOL_CORRECTION;
                 endorphins += ENDORPHIN_CORRECTION;
                 
+                // ADDED: Ensure hormone state variables never go below 0
+                if (cortisol < 0) cortisol = 0;
+                if (endorphins < 0) endorphins = 0; // Safety check for endorphins too
+
                 // Update display values for the "Complete" modal
                 cortisolCorrectionDisplay.textContent = `${CORTISOL_CORRECTION}`;
                 endorphinCorrectionDisplay.textContent = `+${ENDORPHIN_CORRECTION}`;
@@ -491,6 +497,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
