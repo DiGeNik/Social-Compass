@@ -1,20 +1,25 @@
 ```mermaid
 graph TD
-    %% Дефиниции на цветовете (Висок Контраст)
+    %% Дефиниции на цветовете (Висок Контраст, по пример)
     classDef startEnd fill:gold,stroke:#333,stroke-width:2px;
     classDef function fill:cornflowerblue,stroke:#333,stroke-width:2px;
     classDef io fill:lightgreen,stroke:#333,stroke-width:2px;
     classDef condition fill:salmon,stroke:#333,stroke-width:2px;
+    classDef junction fill:#fff,stroke:#333,stroke-width:2px;
 
     %% Начало
-    A(НАЧАЛО) --> B[Таймерът стартира / Кортизол се увеличава +5 на всеки 5 мин];
+    A(НАЧАЛО) --> J_Loop(( ));
     class A startEnd;
-    class B function;
+    class J_Loop junction;
 
-    %% Основен цикъл
+    %% Съединител на главния цикъл
+    J_Loop --> B[Таймерът стартира / Кортизол се увеличава +5 на всеки 5 мин];
+    class B function;
+    
     B --> C{Таймерът достига 45 мин?};
     class C condition;
-    C -- "НЕ" --> B;
+    
+    C -- "НЕ" --> J_Loop;
     C -- "ДА" --> E[СТОП ТАЙМЕР];
     class E function;
 
@@ -26,10 +31,10 @@ graph TD
     %% Път 1: Изпълнение
     G -- "'Изпълних Мисията!'" --> H[Прилага &quot;Награда&quot;:<br>Кортизол -15<br>Ендорфини +20<br>Проверка: Ако < 0, задай на 0];
     H --> I[/Показва &quot;Браво!&quot;/];
-    I --> Z[НУЛИРАНЕ НА ТАЙМЕР];
+    I --> J_Reset(( ));
     class H function;
     class I io;
-    class Z function;
+    class J_Reset junction;
 
     %% Път 2: Отказ
     G -- "'Отказвам'" --> K[/Показва &quot;Етичен Филтър&quot; &#40;6 въпроса&#41;/];
@@ -40,7 +45,7 @@ graph TD
 
     %% Път 2A: Нисък риск
     M -- "НЕ &#40;Нисък риск&#41;" --> N[Прилага &quot;Наказание&quot;:<br>Ендорфини -20<br>Проверка: Ако < 0, задай на 0<br>Кортизол: БЕЗ ПРОМЯНА];
-    N --> Z;
+    N --> J_Reset;
     class N function;
 
     %% Път 2B: Висок риск
@@ -49,6 +54,8 @@ graph TD
     P --> N;
     class O,P io;
 
-    %% Събиране
-    Z --> B;
+    %% Събиране и Нулиране
+    J_Reset --> Z[НУЛИРАНЕ НА ТАЙМЕР];
+    class Z function;
+    Z --> J_Loop;
 ```
