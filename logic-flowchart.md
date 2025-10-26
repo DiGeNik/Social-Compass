@@ -1,10 +1,10 @@
 ```mermaid
 graph TD
-    %% Дефиниции на цветовете (базирани на Екранна снимка 2025-10-26 171323.png)
-    classDef startEnd fill:#f9e79f,stroke:#333,stroke-width:2px;
-    classDef function fill:#aed6f1,stroke:#333,stroke-width:2px;
-    classDef io fill:#a9dfbf,stroke:#333,stroke-width:2px;
-    classDef condition fill:#f5b7b1,stroke:#333,stroke-width:2px;
+    %% Дефиниции на цветовете (Висок Контраст)
+    classDef startEnd fill:gold,stroke:#333,stroke-width:2px;
+    classDef function fill:cornflowerblue,stroke:#333,stroke-width:2px;
+    classDef io fill:lightgreen,stroke:#333,stroke-width:2px;
+    classDef condition fill:salmon,stroke:#333,stroke-width:2px;
 
     %% Начало
     A(НАЧАЛО) --> B[Таймерът стартира / Кортизол се увеличава +5 на всеки 5 мин];
@@ -30,4 +30,25 @@ graph TD
     class H function;
     class I io;
     class Z function;
+
+    %% Път 2: Отказ
+    G -- "'Отказвам'" --> K[/Показва &quot;Етичен Филтър&quot; &#40;6 въпроса&#41;/];
+    K --> L[/Изпращане на отговори/];
+    L --> M{Отговори &apos;Да&apos; >= 3 ?};
+    class K,L io;
+    class M condition;
+
+    %% Път 2A: Нисък риск
+    M -- "НЕ &#40;Нисък риск&#41;" --> N[Прилага &quot;Наказание&quot;:<br>Ендорфини -20<br>Проверка: Ако < 0, задай на 0<br>Кортизол: БЕЗ ПРОМЯНА];
+    N --> Z;
+    class N function;
+
+    %% Път 2B: Висок риск
+    M -- "ДА &#40;Висок риск&#41;" --> O[/Показва &quot;Кризисен Панел&quot;/];
+    O --> P[/Натиска &quot;Разбрах&quot;/];
+    P --> N;
+    class O,P io;
+
+    %% Събиране
+    Z --> B;
 ```
