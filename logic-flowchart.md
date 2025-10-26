@@ -1,6 +1,5 @@
 ```mermaid
-%%{ init: { 'flowchart': { 'defaultRenderer': 'elk' } } }%%
-graph LR
+graph TD
     %% Дефиниции на цветовете (Висок Контраст, Удебелен Текст)
     classDef startEnd fill:gold,stroke:#333,stroke-width:2px,font-weight:bold,color:black;
     classDef function fill:cornflowerblue,stroke:#333,stroke-width:2px,font-weight:bold,color:black;
