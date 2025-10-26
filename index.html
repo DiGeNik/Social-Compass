@@ -299,16 +299,23 @@
                 updateUI();
             }
 
-            // Start/Stop Timer Logic
-            function toggleTimer() {
+            // НОВА ФУНКЦИЯ: stopTimer()
+            function stopTimer() {
                 if (isTimerRunning) {
-                    // Stop Timer
                     isTimerRunning = false;
                     clearInterval(timerInterval);
                     timerInterval = null;
                     startButton.textContent = 'Продължи Режима';
                     startButton.classList.remove('bg-red-500', 'hover:bg-red-600');
                     startButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                }
+            }
+
+            // Start/Stop Timer Logic
+            function toggleTimer() {
+                if (isTimerRunning) {
+                    // Stop Timer
+                    stopTimer();
                 } else {
                     // Start Timer
                     isTimerRunning = true;
@@ -473,3 +480,4 @@
     </script>
 </body>
 </html>
+
