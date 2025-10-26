@@ -211,8 +211,9 @@
                 "Усещаш ли, че прекарваш повече време с AI, отколкото с реални приятели?", // Оценка на риска от симулация
                 "Отлагаш ли хранене или сън заради дигитални занимания?", // Оценка на загубата на режим
                 "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?", // Оценка на бягство от реалността
-                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
-                "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?" // Допълнителен въпрос за влияние върху живота
+                "Чувстваш ли силна тревожност или раздразнитеLност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
+                "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?", // Допълнителен въпрос за влияние върху живота
+                "Чувстваш ли, че губиш контрол над времето, което прекарваш дигитално?" // ADDED: 6-ти въпрос
             ];
 
             // --- 2. STATE VARIABLES ---
@@ -373,15 +374,15 @@
 
             // NEW FUNCTION: Handle the path after mission refusal
             function handleRefusalPath() {
-                cortisol += CORTISOL_CORRECTION;
-                // Endorphins are NOT increased as per the new rule
-                
-                // Update display values for the "Complete" modal
-                cortisolCorrectionDisplay.textContent = `${CORTISOL_CORRECTION}`;
-                endorphinCorrectionDisplay.textContent = `+0`; // Explicitly show no gain
-                
+                // MODIFIED: Per new request, no hormone correction is applied on refusal.
+                // The timer just resets, and the user keeps their current (high) hormone levels.
+                console.log("Refusal path: No hormone correction applied.");
                 resetTimer();
-                showModal('complete-modal');
+                
+                // MODIFIED: Removed all code related to:
+                // 1. cortisol += CORTISOL_CORRECTION;
+                // 2. Updating cortisolCorrectionDisplay / endorphinCorrectionDisplay
+                // 3. showModal('complete-modal');
             }
 
             // D. Handle Mission Refuse
@@ -399,7 +400,8 @@
                     const div = document.createElement('div');
 
                     // MODIFIED: Add col-span-2 if last item and odd number of questions
-                    let divClasses = "border border-gray-200 p-3 rounded-lg";
+                    // MODIFIED: Added flex classes to align buttons to the bottom
+                    let divClasses = "border border-gray-200 p-3 rounded-lg flex flex-col justify-between";
                     if (filterQuestions.length % 2 !== 0 && index === filterQuestions.length - 1) {
                         divClasses += " col-span-2"; 
                     }
@@ -440,7 +442,7 @@
                 console.log(`Ethical Filter: ${yesCount} 'Yes' answers.`);
                 hideModal('filter-modal');
 
-                if (yesCount >= 2) {
+                if (yesCount >= 3) { // MODIFIED: Changed threshold from 2 to 3
                     showModal('crisis-modal');
                 } else {
                     // MODIFIED: Call the new refusal path function
@@ -488,6 +490,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
