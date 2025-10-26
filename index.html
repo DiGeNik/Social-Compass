@@ -380,6 +380,516 @@
 
             // NEW FUNCTION: Handle the path after mission refusal
             function handleRefusalPath() {
+                // MODIFIED: Per new request (26.10), refusal decreases endorphins by 20.
+                console.log("Refusal path: Applying endorphin penalty.");
+                endorphins -= ENDORPHIN_CORRECTION; // Decrease endorphins by 20
+
+                // ADDED: Ensure endorphins do not go below 0 (as requested)
+                if (endorphins < 0) endorphins = 0;
+
+                // The timer just resets. Cortisol remains high, endorphins are penalized.
+                resetTimer(); // This will call updateUI() and show the new (lower) endorphin level.
+                
+                // NOTE: No "complete" modal is shown and no cortisol correction is applied.
+            }
+
+            // D. Handle Mission Refuse
+            function handleMissionRefuse() {
+                hideModal('mission-modal');
+                populateEthicalFilter();
+                showModal('filter-modal');
+            }
+
+            // D. Populate Ethical Filter
+            function populateEthicalFilter() {
+                filterForm.innerHTML = ''; // Clear previous questions
+                filterErrorMsg.classList.add('hidden'); // ADDED: Hide error on modal open
+                filterQuestions.forEach((question, index) => {
+                    const qId = `q${index}`;
+                    const div = document.createElement('div');
+
+                    // MODIFIED: Add col-span-2 if last item and odd number of questions
+                    // MODIFIED: Added flex classes to align buttons to the bottom
+                    let divClasses = "border border-gray-200 p-3 rounded-lg flex flex-col justify-between";
+                    if (filterQuestions.length % 2 !== 0 && index === filterQuestions.length - 1) {
+                        divClasses += " col-span-2"; 
+                    }
+                    div.className = divClasses;
+                    
+                    div.innerHTML = `
+                        <label for="${qId}" class="block text-sm font-medium text-gray-800 mb-2">${question}</label> <div class="flex gap-3" id="${qId}"> <label class="flex-1 flex items-center justify-center p-2 border rounded-lg cursor-pointer text-sm"> <input type="radio" name="q${index}" value="yes" class="mr-1 accent-yellow-500"> Да
+                            </label>
+                            <label class="flex-1 flex items-center justify-center p-2 border rounded-lg cursor-pointer text-sm"> <input type="radio" name="q${index}" value="no" class="mr-1 accent-gray-500"> <!-- MODIFIED: Removed 'checked' -->Не
+                            </label>
+                        </div>
+                    `;
+                    filterForm.appendChild(div);
+                });
+            }
+
+            // D. Handle Filter Submission
+            function handleSubmitFilter() {
+                filterErrorMsg.classList.add('hidden'); // ADDED: Hide error on new submit
+                const formData = new FormData(filterForm);
+                let yesCount = 0;
+                let allAnswered = true; // Check if all questions are answered
+
+                filterQuestions.forEach((_, index) => {
+                    const questionName = `q${index}`;
+                    if (!formData.has(questionName)) {
+                        allAnswered = false;
+                    } else if (formData.get(questionName) === 'yes') {
+                        yesCount++;
+                    }
+                });
+
+                if (!allAnswered) {
+                    filterErrorMsg.classList.remove('hidden'); // MODIFIED: Replaced alert()
+                    return; // Stop function if not all answered
+                }
+                
+                console.log(`Ethical Filter: ${yesCount} 'Yes' answers.`);
+                hideModal('filter-modal');
+
+                if (yesCount >= 3) { // MODIFIED: Changed threshold from 2 to 3
+                    showModal('crisis-modal');
+                } else {
+                    // MODIFIED: Call the new refusal path function
+                    handleRefusalPath();
+                }
+            }
+
+            // --- 5. INITIALIZE & EVENT LISTENERS ---
+            updateUI();
+            rotateMottos(); // Start first motto
+            setInterval(rotateMottos, 5000); // Rotate mottos every 5 seconds
+
+            startButton.addEventListener('click', toggleTimer);
+            completeMissionBtn.addEventListener('click', handleMissionComplete);
+            refuseMissionBtn.addEventListener('click', handleMissionRefuse);
+            submitFilterBtn.addEventListener('click', handleSubmitFilter);
+
+            // Event listener for the "Разбрах" button in crisis modal
+            crisisUnderstoodBtn.addEventListener('click', () => {
+                hideModal('crisis-modal');
+                // MODIFIED: Call the new refusal path function, NOT handleMissionComplete()
+                handleRefusalPath();
+            });
+
+            // Close modal functionality for "Complete" modal
+            document.addEventListener('click', (e) => {
+                if(e.target.matches('#complete-modal button')) {
+                    hideModal(e.target.closest('.fixed').id);
+                }
+            });
+
+            // Register PWA Service Worker (if sw.js exists)
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful: ', registration.scope);
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Социален компас</title>
+    
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Link PWA Manifest --><link rel="manifest" href="manifest.webmanifest">
+    
+    <!-- Theme color for mobile browser UI --><meta name="theme-color" content="#22c55e">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior: none; /* Prevents pull-to-refresh */
+        }
+        
+        /* Custom class for the motto fade animation */
+        .fade-in-out {
+            animation: fadeInOut 5s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Hide scrollbars for the body */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Custom scrollbar for filter-form if needed */
+        #ethical-filter-form::-webkit-scrollbar {
+            width: 8px;
+        }
+        #ethical-filter-form::-webkit-scrollbar-thumb {
+            background-color: #d1d5db; /* gray-300 */
+            border-radius: 4px;
+        }
+        #ethical-filter-form {
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #d1d5db transparent; /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+    <!-- Main Application Wrapper --><div id="app-container" class="flex-grow flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full">
+        
+        <!-- Header: Digital Crusoe's Guide (Mottos) --><header class="w-full text-center p-4 h-20 flex items-center justify-center">
+            <div>
+                <h2 class="text-sm font-semibold text-green-700 uppercase tracking-wider">Дигитален Наръчник на Крузо</h2>
+                <p id="motto-display" class="text-gray-600 italic mt-1 fade-in-out h-10"></p>
+            </div>
+        </header>
+
+        <!-- Main Content: Timer and Stats --><main class="w-full bg-white rounded-2xl shadow-xl p-6 flex-grow flex flex-col justify-center items-center">
+            
+            <!-- Hormone Stats --><div class="w-full mb-8">
+                <h3 class="text-center text-lg font-bold mb-4">Хормонален Баланс</h3>
+                <div class="flex justify-around">
+                    <!-- Cortisol (Stress) --><div class="text-center">
+                        <div class="text-5xl font-black text-red-500" id="cortisol-level">0</div>
+                        <div class="text-sm font-medium text-gray-500">Кортизол (Стрес)</div>
+                    </div>
+                    <!-- Endorphins (Happiness) --><div class="text-center">
+                        <div class="text-5xl font-black text-blue-500" id="endorphin-level">0</div>
+                        <div class="text-sm font-medium text-gray-500">Ендорфини (Щастие)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crusoe Alarm (Timer) --><div class="w-full flex flex-col items-center">
+                <h3 class="text-center text-lg font-bold mb-4">Крузо Аларм</h3>
+                <div id="timer-display" class="text-7xl font-extrabold text-gray-800 mb-6 p-4 rounded-lg bg-gray-100 w-full text-center">
+                    00:00
+                </div>
+                <button id="start-button" class="w-full bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-4 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
+                    Старт на Режима
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: PVS Mission Required --><div id="mission-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
+            <img src="icon.svg" alt="Compass Icon" class="w-16 h-16 mx-auto mb-4 text-yellow-500">
+            <h2 class="text-2xl font-bold text-red-600 mb-2">КРУЗО АЛАРМ!</h2>
+            <p class="text-gray-700 mb-4">Достигнахте дигиталния си праг. Време е за физическа мисия, за да балансирате хормоните си.</p>
+            
+            <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                <h4 class="text-lg font-bold mb-2" id="mission-title">Заглавие на мисията</h4>
+                <p class="text-gray-800" id="mission-instruction">Инструкции за мисията тук.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button id="complete-mission-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-5 rounded-lg transition-transform transform hover:scale-105">
+                    Изпълних Мисията!
+                </button>
+                <button id="refuse-mission-btn" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-5 rounded-lg transition-transform transform hover:scale-105">
+                    Отказвам
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Mission Complete (Hormone Correction) --><div id="complete-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold text-green-600 mb-4">Браво, Корабокрушенецо!</h2>
+            <p class="text-gray-700 mb-6">Успешно се завърнахте в реалността. Вашият хормонален баланс е коригиран:</p>
+            
+            <div class="space-y-3 mb-6">
+                <div class="text-left">
+                    <span class="font-bold text-red-500">Кортизол (Стрес):</span>
+                    <span class="font-bold text-lg" id="cortisol-correction-display"></span>
+                </div>
+                <div class="text-left">
+                    <span class="font-bold text-blue-500">Ендорфини (Щастие):</span>
+                    <span class="font-bold text-lg" id="endorphin-correction-display"></span>
+                </div>
+            </div>
+
+            <button onclick="hideModal('complete-modal')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-5 rounded-lg">
+                Продължи
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL: Ethical Filter (Adam Rain Case) - Height Adjusted --><div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-full max-w-lg flex flex-col"> <!-- MODIFIED: max-w-md -> max-w-lg, removed max-h-80vh --><h2 class="text-xl font-bold text-yellow-600 mb-2 text-center">Етичен Филтър</h2> <p class="text-gray-700 mb-4 text-center text-sm">Вашият отказ активира "Казус Адам Рейн". Моля, отговорете честно:</p> <form id="ethical-filter-form" class="grid grid-cols-2 gap-3 p-1"> <!-- MODIFIED: Changed layout to 2-column grid --><!-- Questions will be injected here by JS --></form>
+
+            <button id="submit-filter-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-lg mt-4"> Изпрати отговори
+            </button>
+            <!-- ADDED: Validation Error Message -->
+            <p id="filter-error-msg" class="text-red-500 text-sm text-center mt-2 hidden">Моля, отговорете на всички въпроси!</p>
+        </div>
+    </div>
+
+    <!-- MODAL: Crisis Contacts --><div id="crisis-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-red-50 rounded-2xl shadow-xl p-6 w-full max-w-md"> <!-- MODIFIED: bg-white -> bg-red-50 -->
+            <h2 class="text-3xl font-bold text-red-700 mb-4 text-center">Критично насочване:<br>Кризисни контакти</h2> <!-- MODIFIED: Text, <br>, and styling -->
+            <p class="text-gray-700 mb-6 text-center">Вашите отговори показват висок риск. Потърсете помощ!</p>
+            
+            <div class="space-y-4 bg-yellow-100 border border-yellow-300 p-4 rounded-lg text-left"> <!-- MODIFIED: bg-gray-100 -> bg-yellow-100, added border -->
+                <div class="font-medium">
+                    Национална линия за подкрепа:
+                    <span class="font-bold text-gray-800 block text-lg">116 111</span>
+                </div>
+                <div class="font-medium">
+                    Гореща линия на БЧК:
+                    <span class="font-bold text-gray-800 block text-lg">0 800 88 001</span>
+                </div>
+            </div>
+
+            <button id="crisis-understood-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-5 rounded-lg mt-6"> <!-- MODIFIED: bg-blue-500 -> bg-red-500 -->
+                Разбрах
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. PLACEHOLDER DATA (Based on unfilled DOCX) ---
+            // Тъй като прикаченият .docx беше шаблон, тук се използват примерни данни.
+            
+            // Section I: Mottos
+            const mottos = [
+                "Дисциплината е мостът между целите и постиженията.", // Мото за режим
+                "Търси истинска връзка, не AI симулация.", // Мото за AI зависимост
+                "Човекът е социално същество, 'Петкан' има нужда от теб.", // Мото за социална връзка
+                "Физическият труд спасява ума, както спаси Крузо.", // Мото за физически труд
+                "Дори на самотен остров, надеждата е котва." // Мото за отчаяние
+            ];
+
+            // Section II: STEM Data (Using prompt's hardcoded values)
+            const ALARM_THRESHOLD_MINUTES = 1; // Placeholder for [Въведете броя минути]
+            const ALARM_THRESHOLD_SECONDS = ALARM_THRESHOLD_MINUTES * 60;
+            const CORTISOL_CORRECTION = -15; // Placeholder for [Въведете отрицателно число]
+            const ENDORPHIN_CORRECTION = 20; // Placeholder for [Въведете положително число]
+            
+            // Logic from Prompt: "На всеки 5 минути... кортизола се увеличава с +5"
+            const CORTISOL_INCREASE_INTERVAL_MIN = 5;
+            const CORTISOL_INCREASE_INTERVAL_SEC = CORTISOL_INCREASE_INTERVAL_MIN * 60;
+            const CORTISOL_INCREASE_AMOUNT = 5;
+
+            // Section III: PVS Missions
+            const missions = [
+                { title: "Мисия 'Клек'", instruction: "Направи 3 серии по 15 клякания." },
+                { title: "Мисия 'Разходка'", instruction: "5 минути бърза разходка из стаята/коридора." },
+                { title: "Мисия 'Разтягане'", instruction: "Изпъни ръце над главата и направи 10 кръгови движения." },
+                { title: "Мисия 'Гребане'", instruction: "Седни изправен и направи 20 повдигания на коленете, имитирайки гребане." }
+            ];
+
+            // Section IV: Ethical Filter Questions
+            const filterQuestions = [
+                "Усещаш ли, че прекарваш повече време с AI, отколкото с реални приятели?", // Оценка на риска от симулация
+                "Отлагаш ли хранене или сън заради дигитални занимания?", // Оценка на загубата на режим
+                "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?", // Оценка на бягство от реалността
+                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // MODIFIED: Правописна грешка
+                "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?", // Допълнителен въпрос за влияние върху живота
+                "Чувстваш ли, че губиш контрол над времето, което прекарваш дигитално?" // ADDED: 6-ти въпрос
+            ];
+
+            // --- 2. STATE VARIABLES ---
+            let timerInterval = null;
+            let secondsPassed = 0;
+            let cortisol = 0;
+            let endorphins = 0;
+            let isTimerRunning = false;
+            let currentMottoIndex = 0;
+            let lastCortisolIncreaseTime = 0;
+
+            // --- 3. DOM ELEMENTS ---
+            const mottoDisplay = document.getElementById('motto-display');
+            const cortisolLevel = document.getElementById('cortisol-level');
+            const endorphinLevel = document.getElementById('endorphin-level');
+            const timerDisplay = document.getElementById('timer-display');
+            const startButton = document.getElementById('start-button');
+            
+            const missionModal = document.getElementById('mission-modal');
+            const missionTitle = document.getElementById('mission-title');
+            const missionInstruction = document.getElementById('mission-instruction');
+            const completeMissionBtn = document.getElementById('complete-mission-btn');
+            const refuseMissionBtn = document.getElementById('refuse-mission-btn');
+
+            const completeModal = document.getElementById('complete-modal');
+            const cortisolCorrectionDisplay = document.getElementById('cortisol-correction-display');
+            const endorphinCorrectionDisplay = document.getElementById('endorphin-correction-display');
+
+            const filterModal = document.getElementById('filter-modal');
+            const filterForm = document.getElementById('ethical-filter-form');
+            const submitFilterBtn = document.getElementById('submit-filter-btn');
+            const filterErrorMsg = document.getElementById('filter-error-msg'); // ADDED
+
+            const crisisModal = document.getElementById('crisis-modal');
+            const crisisUnderstoodBtn = document.getElementById('crisis-understood-btn');
+
+            // --- 4. CORE FUNCTIONS ---
+
+            // Utility: Show/Hide Modals
+            window.showModal = (modalId) => document.getElementById(modalId).classList.remove('hidden');
+            window.hideModal = (modalId) => document.getElementById(modalId).classList.add('hidden');
+
+            // Update UI
+            function updateUI() {
+                // MODIFIED: Use Math.max to display 0 if negative, but DO NOT change the state variable here.
+                // This fixes the bug where an increase from -5 would become 0 instead of 5.
+                cortisolLevel.textContent = Math.max(0, cortisol);
+                endorphinLevel.textContent = Math.max(0, endorphins);
+                timerDisplay.textContent = formatTime(secondsPassed);
+                
+                // REMOVED the state-changing logic from here:
+                // if (cortisol < 0) cortisol = 0;
+                // if (endorphins < 0) endorphins = 0;
+            }
+
+            // Format time as MM:SS
+            function formatTime(totalSeconds) {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            // Rotate Mottos
+            function rotateMottos() {
+                mottoDisplay.textContent = mottos[currentMottoIndex];
+                currentMottoIndex = (currentMottoIndex + 1) % mottos.length;
+            }
+
+            // Timer Tick Function
+            function tick() {
+                secondsPassed++;
+
+                // B. STEM Logic: Check for Alarm Threshold
+                if (secondsPassed >= ALARM_THRESHOLD_SECONDS) {
+                    triggerAlarm();
+                }
+
+                // C. Hormone Logic: Increase Cortisol every 5 minutes
+                if (secondsPassed > 0 && (secondsPassed - lastCortisolIncreaseTime) >= CORTISOL_INCREASE_INTERVAL_SEC) {
+                    cortisol += CORTISOL_INCREASE_AMOUNT;
+                    lastCortisolIncreaseTime = secondsPassed;
+                    console.log(`Increased cortisol by ${CORTISOL_INCREASE_AMOUNT} at ${secondsPassed}s`);
+                }
+                
+                updateUI();
+            }
+
+            // stopTimer() Function
+            function stopTimer() {
+                if (isTimerRunning) {
+                    isTimerRunning = false;
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    startButton.textContent = 'Продължи Режима';
+                    startButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    startButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                }
+            }
+
+            // Start/Stop Timer Logic
+            function toggleTimer() {
+                if (isTimerRunning) {
+                    // Stop Timer
+                    stopTimer();
+                } else {
+                    // Start Timer
+                    isTimerRunning = true;
+                    lastCortisolIncreaseTime = secondsPassed; // Reset cortisol interval timer
+                    timerInterval = setInterval(tick, 1000);
+                    startButton.textContent = 'Пауза на Режима';
+                    startButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    startButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                }
+            }
+
+            // Reset Timer
+            function resetTimer() {
+                stopTimer();
+                secondsPassed = 0;
+                lastCortisolIncreaseTime = 0;
+                startButton.textContent = 'Старт на Режима';
+                startButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                startButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                updateUI();
+            }
+
+            // B. Trigger Alarm
+            function triggerAlarm() {
+                console.log("ALARM TRIGGERED!");
+                stopTimer();
+                generateMission();
+                showModal('mission-modal');
+            }
+
+            // C. Generate PVS Mission
+            function generateMission() {
+                const mission = missions[Math.floor(Math.random() * missions.length)];
+                missionTitle.textContent = mission.title;
+                missionInstruction.textContent = mission.instruction;
+            }
+
+            // NEW FUNCTION: Apply correction and reset
+            function applyHormoneCorrectionAndReset() {
+                cortisol += CORTISOL_CORRECTION;
+                endorphins += ENDORPHIN_CORRECTION;
+                
+                // ADDED: Ensure hormone state variables never go below 0
+                if (cortisol < 0) cortisol = 0;
+                if (endorphins < 0) endorphins = 0; // Safety check for endorphins too
+
+                // Update display values for the "Complete" modal
+                cortisolCorrectionDisplay.textContent = `${CORTISOL_CORRECTION}`;
+                endorphinCorrectionDisplay.textContent = `+${ENDORPHIN_CORRECTION}`;
+                
+                resetTimer();
+            }
+
+            // C. Handle Mission Complete
+            function handleMissionComplete() {
+                applyHormoneCorrectionAndReset();
+                hideModal('mission-modal');
+                showModal('complete-modal');
+            }
+
+            // NEW FUNCTION: Handle the path after mission refusal
+            function handleRefusalPath() {
                 // MODIFIED: Per new request, no hormone correction is applied on refusal.
                 // The timer just resets, and the user keeps their current (high) hormone levels.
                 console.log("Refusal path: No hormone correction applied.");
