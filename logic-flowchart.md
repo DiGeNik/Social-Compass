@@ -1,4 +1,4 @@
-graph TD
+```mermaid (graph TD
     direction TB
     
     subgraph "Основен цикъл"
@@ -40,3 +40,4 @@ graph TD
 
     Z --> B;
 ```
+) ```
