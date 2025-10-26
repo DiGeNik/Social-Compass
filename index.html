@@ -97,12 +97,12 @@
 
     <!-- 1. Mission Modal (Alarm Triggered) -->
     <div id="mission-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
-            <img src="icon.svg" alt="Compass Icon" class="w-16 h-16 mx-auto mb-4 text-yellow-500">
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-full max-w-md text-center"> <!-- p-4, max-w-md -->
+            <img src="icon.svg" alt="Compass Icon" class="w-16 h-16 mx-auto mb-3 text-yellow-500"> <!-- mb-3 -->
             <h2 class="text-2xl font-bold text-red-600 mb-2">КРУЗО АЛАРМ!</h2>
-            <p class="text-gray-700 mb-4">Достигнахте дигиталния си праг. Време е за физическа мисия, за да балансирате хормоните си.</p>
+            <p class="text-gray-700 mb-4">Достигнахте дигиталния си праг. Време е за физическа мисия.</p> <!-- mb-4 -->
             
-            <div class="bg-gray-100 p-4 rounded-lg mb-6">
+            <div class="bg-gray-100 p-4 rounded-lg mb-4"> <!-- mb-4 -->
                 <h4 class="text-lg font-bold mb-2" id="mission-title">Заглавие на мисията</h4>
                 <p class="text-gray-800" id="mission-instruction">Инструкции за мисията тук.</p>
             </div>
@@ -120,11 +120,11 @@
 
     <!-- 2. Mission Complete Modal (Success) -->
     <div id="complete-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
-            <h2 class="text-2xl font-bold text-green-600 mb-4">Браво, Корабокрушенецо!</h2>
-            <p class="text-gray-700 mb-6">Успешно се завърнахте в реалността. Вашият хормонален баланс е коригиран:</p>
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-full max-w-md text-center"> <!-- p-4, max-w-md -->
+            <h2 class="text-2xl font-bold text-green-600 mb-3">Браво, Корабокрушенецо!</h2> <!-- mb-3 -->
+            <p class="text-gray-700 mb-4">Вашият хормонален баланс е коригиран:</p> <!-- mb-4 -->
             
-            <div class="space-y-3 mb-6">
+            <div class="space-y-3 mb-4"> <!-- mb-4 -->
                 <div class="text-left">
                     <span class="font-bold text-red-500">Кортизол (Стрес):</span>
                     <span class="font-bold text-lg" id="cortisol-correction-display"></span>
@@ -143,15 +143,15 @@
 
     <!-- 3. Ethical Filter Modal (Refusal) -->
     <div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg flex flex-col">
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-full max-w-lg flex flex-col"> <!-- p-4, max-w-lg -->
             <h2 class="text-xl font-bold text-yellow-600 mb-2 text-center">Етичен Филтър</h2>
             <p class="text-gray-700 mb-4 text-center text-sm">Вашият отказ активира "Казус Адам Рейн". Моля, отговорете честно:</p>
             
-            <form id="ethical-filter-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form id="ethical-filter-form" class="grid grid-cols-1 sm:grid-cols-2 gap-3"> <!-- gap-3 -->
                 <!-- Questions will be injected here by JS -->
             </form>
 
-            <button id="submit-filter-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-lg mt-6">
+            <button id="submit-filter-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-lg mt-4"> <!-- mt-4 -->
                 Изпрати отговори
             </button>
             <p id="filter-error-msg" class="text-red-500 text-sm text-center mt-2 hidden">Моля, отговорете на всички въпроси!</p>
@@ -160,15 +160,15 @@
 
     <!-- 4. Crisis Modal (High Risk) -->
     <div id="crisis-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-red-50 rounded-2xl shadow-xl p-6 w-full max-w-md border-2 border-red-200">
-            <h2 class="text-2xl font-bold text-red-600 mb-4 text-center">
+        <div class="bg-red-50 rounded-2xl shadow-xl p-4 w-full max-w-md border-2 border-red-200"> <!-- p-4, max-w-md -->
+            <h2 class="text-xl font-bold text-red-600 mb-3 text-center"> <!-- text-xl, mb-3 -->
                 Критично насочване:
                 <br>
                 Кризисни контакти
             </h2>
-            <p class="text-gray-700 mb-6 text-center">Вашите отговори показват висок риск. Потърсете помощ!</p>
+            <p class="text-gray-700 mb-4 text-center">Вашите отговори показват висок риск. Потърсете помощ!</p> <!-- mb-4 -->
             
-            <div class="space-y-4 bg-yellow-100 border border-yellow-300 p-4 rounded-lg text-left">
+            <div class="space-y-3 bg-yellow-100 border border-yellow-300 p-4 rounded-lg text-left"> <!-- space-y-3 -->
                 <div class="font-medium">
                     Национална линия за подкрепа:
                     <span class="font-bold text-gray-800 block text-lg">116 111</span>
@@ -179,7 +179,7 @@
                 </div>
             </div>
 
-            <button id="crisis-understood-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-5 rounded-lg mt-6">
+            <button id="crisis-understood-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-5 rounded-lg mt-4"> <!-- mt-4 -->
                 Разбрах
             </button>
         </div>
@@ -202,7 +202,7 @@
             ];
 
             // Section II: STEM Data (Using prompt's hardcoded values)
-            const ALARM_THRESHOLD_MINUTES = 1; // Placeholder for [Въведете броя минути]
+            const ALARM_THRESHOLD_MINUTES = 45; // Placeholder for [Въведете броя минути]
             const ALARM_THRESHOLD_SECONDS = ALARM_THRESHOLD_MINUTES * 60;
             const CORTISOL_CORRECTION = -15; // Placeholder for [Въведете отрицателно число]
             const ENDORPHIN_CORRECTION = 20; // Placeholder for [Въведете положително число]
@@ -417,7 +417,7 @@
                     const qId = `q${index}`;
                     const div = document.createElement('div');
                     // Card style, flex-col, justify-between
-                    div.className = "border border-gray-200 p-4 rounded-lg flex flex-col justify-between h-full";
+                    div.className = "border border-gray-200 p-3 rounded-lg flex flex-col justify-between h-full"; // p-3
                     
                     // Last item spans full width if odd number
                     if (index === filterQuestions.length - 1 && filterQuestions.length % 2 !== 0) {
@@ -425,7 +425,7 @@
                     }
                     
                     div.innerHTML = `
-                        <label class="block text-sm font-medium text-gray-800 mb-4">${question}</label>
+                        <label class="block text-sm font-medium text-gray-800 mb-3">${question}</label> <!-- mb-3 -->
                         <div class="flex gap-3" id="${qId}">
                             <label class="flex-1 flex items-center justify-center p-2 border rounded-lg cursor-pointer text-sm">
                                 <input type="radio" name="q${index}" value="yes" class="mr-1 accent-yellow-500">
