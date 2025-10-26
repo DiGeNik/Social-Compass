@@ -188,7 +188,7 @@
             ];
 
             // Section II: STEM Data (Using prompt's hardcoded values)
-            const ALARM_THRESHOLD_MINUTES = 1; // Placeholder for [Въведете броя минути]
+            const ALARM_THRESHOLD_MINUTES = 45; // Placeholder for [Въведете броя минути]
             const ALARM_THRESHOLD_SECONDS = ALARM_THRESHOLD_MINUTES * 60;
             const CORTISOL_CORRECTION = -15; // Placeholder for [Въведете отрицателно число]
             const ENDORPHIN_CORRECTION = 20; // Placeholder for [Въведете положително число]
@@ -211,7 +211,7 @@
                 "Усещаш ли, че прекарваш повече време с AI, отколкото с реални приятели?", // Оценка на риска от симулация
                 "Отлагаш ли хранене или сън заради дигитални занимания?", // Оценка на загубата на режим
                 "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?", // Оценка на бягство от реалността
-                "Чувстваш ли силна тревожност или раздразнитеLност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
+                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
                 "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?", // Допълнителен въпрос за влияние върху живота
                 "Чувстваш ли, че губиш контрол над времето, което прекарваш дигитално?" // ADDED: 6-ти въпрос
             ];
@@ -395,6 +395,7 @@
             // D. Populate Ethical Filter
             function populateEthicalFilter() {
                 filterForm.innerHTML = ''; // Clear previous questions
+                filterErrorMsg.classList.add('hidden'); // ADDED: Hide error on modal open
                 filterQuestions.forEach((question, index) => {
                     const qId = `q${index}`;
                     const div = document.createElement('div');
@@ -490,6 +491,7 @@
     </script>
 </body>
 </html>
+
 
 
 
