@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#22c55e"/>
+  
+  <!-- Compass Outer Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#FFFFFF" stroke-width="24"/>
+  
+  <!-- Compass Inner Pointer (North) -->
+  <path d="M256 96 L232 280 C232 280 240 270 256 270 C272 270 280 280 280 280 L256 96Z" fill="#FFFFFF"/>
+  
+  <!-- Compass Inner Pointer (South) -->
+  <path d="M256 416 L232 232 C232 232 240 242 256 242 C272 242 280 232 280 232 L256 416Z" fill="#F0F0F0" opacity="0.8"/>
+  
+  <!-- Center Pin -->
+  <circle cx="256" cy="256" r="24" fill="#FFFFFF"/>
+  
+  <!-- Directional Markers (N, E, S, W) -->
+  <rect x="244" y="46" width="24" height="40" rx="8" fill="#FFFFFF"/>
+  <rect x="244" y="426" width="24" height="40" rx="8" fill="#FFFFFF"/>
+  <rect x="426" y="244" width="40" height="24" rx="8" fill="#FFFFFF"/>
+  <rect x="46" y="244" width="40" height="24" rx="8" fill="#FFFFFF"/>
+</svg>
