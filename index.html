@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Социален компас</title>
     
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Link PWA Manifest -->
-    <link rel="manifest" href="manifest.webmanifest">
+    <!-- Link PWA Manifest --><link rel="manifest" href="manifest.webmanifest">
     
-    <!-- Theme color for mobile browser UI -->
-    <meta name="theme-color" content="#22c55e">
+    <!-- Theme color for mobile browser UI --><meta name="theme-color" content="#22c55e">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,49 +33,57 @@
             100% { opacity: 0; transform: translateY(-10px); }
         }
 
-        /* Hide scrollbars */
+        /* Hide scrollbars for the body */
         ::-webkit-scrollbar {
             display: none;
         }
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        body {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        /* Custom scrollbar for filter-form if needed */
+        #ethical-filter-form::-webkit-scrollbar {
+            width: 8px;
+        }
+        #ethical-filter-form::-webkit-scrollbar-thumb {
+            background-color: #d1d5db; /* gray-300 */
+            border-radius: 4px;
+        }
+        #ethical-filter-form {
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #d1d5db transparent; /* Firefox */
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
 
-    <!-- Main Application Wrapper -->
-    <div id="app-container" class="flex-grow flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full">
+    <!-- Main Application Wrapper --><div id="app-container" class="flex-grow flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full">
         
-        <!-- Header: Digital Crusoe's Guide (Mottos) -->
-        <header class="w-full text-center p-4 h-20 flex items-center justify-center">
+        <!-- Header: Digital Crusoe's Guide (Mottos) --><header class="w-full text-center p-4 h-20 flex items-center justify-center">
             <div>
                 <h2 class="text-sm font-semibold text-green-700 uppercase tracking-wider">Дигитален Наръчник на Крузо</h2>
                 <p id="motto-display" class="text-gray-600 italic mt-1 fade-in-out h-10"></p>
             </div>
         </header>
 
-        <!-- Main Content: Timer and Stats -->
-        <main class="w-full bg-white rounded-2xl shadow-xl p-6 flex-grow flex flex-col justify-center items-center">
+        <!-- Main Content: Timer and Stats --><main class="w-full bg-white rounded-2xl shadow-xl p-6 flex-grow flex flex-col justify-center items-center">
             
-            <!-- Hormone Stats -->
-            <div class="w-full mb-8">
+            <!-- Hormone Stats --><div class="w-full mb-8">
                 <h3 class="text-center text-lg font-bold mb-4">Хормонален Баланс</h3>
                 <div class="flex justify-around">
-                    <!-- Cortisol (Stress) -->
-                    <div class="text-center">
+                    <!-- Cortisol (Stress) --><div class="text-center">
                         <div class="text-5xl font-black text-red-500" id="cortisol-level">0</div>
                         <div class="text-sm font-medium text-gray-500">Кортизол (Стрес)</div>
                     </div>
-                    <!-- Endorphins (Happiness) -->
-                    <div class="text-center">
+                    <!-- Endorphins (Happiness) --><div class="text-center">
                         <div class="text-5xl font-black text-blue-500" id="endorphin-level">0</div>
                         <div class="text-sm font-medium text-gray-500">Ендорфини (Щастие)</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Crusoe Alarm (Timer) -->
-            <div class="w-full flex flex-col items-center">
+            <!-- Crusoe Alarm (Timer) --><div class="w-full flex flex-col items-center">
                 <h3 class="text-center text-lg font-bold mb-4">Крузо Аларм</h3>
                 <div id="timer-display" class="text-7xl font-extrabold text-gray-800 mb-6 p-4 rounded-lg bg-gray-100 w-full text-center">
                     00:00
@@ -90,8 +95,7 @@
         </main>
     </div>
 
-    <!-- MODAL: PVS Mission Required -->
-    <div id="mission-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+    <!-- MODAL: PVS Mission Required --><div id="mission-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
             <img src="icon.svg" alt="Compass Icon" class="w-16 h-16 mx-auto mb-4 text-yellow-500">
             <h2 class="text-2xl font-bold text-red-600 mb-2">КРУЗО АЛАРМ!</h2>
@@ -113,8 +117,7 @@
         </div>
     </div>
 
-    <!-- MODAL: Mission Complete (Hormone Correction) -->
-    <div id="complete-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+    <!-- MODAL: Mission Complete (Hormone Correction) --><div id="complete-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md text-center">
             <h2 class="text-2xl font-bold text-green-600 mb-4">Браво, Корабокрушенецо!</h2>
             <p class="text-gray-700 mb-6">Успешно се завърнахте в реалността. Вашият хормонален баланс е коригиран:</p>
@@ -136,34 +139,32 @@
         </div>
     </div>
 
-    <!-- MODAL: Ethical Filter (Adam Rain Case) -->
-    <div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
-            <h2 class="text-2xl font-bold text-yellow-600 mb-4 text-center">Етичен Филтър</h2>
-            <p class="text-gray-700 mb-6 text-center">Вашият отказ активира "Казус Адам Рейн". Моля, отговорете честно:</p>
-            
-            <form id="ethical-filter-form" class="space-y-5">
-                <!-- Questions will be injected here by JS -->
-            </form>
+    <!-- MODAL: Ethical Filter (Adam Rain Case) - Height Adjusted --><div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl p-4 w-full max-w-md flex flex-col max-h-[80vh]"> <!-- Added flex-col and max-h-80vh --><h2 class="text-xl font-bold text-yellow-600 mb-2 text-center">Етичен Филтър</h2> <!-- Smaller heading --><p class="text-gray-700 mb-4 text-center text-sm">Вашият отказ активира "Казус Адам Рейн". Моля, отговорете честно:</p> <!-- Smaller text --><form id="ethical-filter-form" class="space-y-3 overflow-y-auto flex-grow p-1 -mx-1"> <!-- Added overflow-y-auto, flex-grow, and padding adjustments --><!-- Questions will be injected here by JS --></form>
 
-            <button id="submit-filter-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-lg mt-6">
-                Изпрати отговори
+            <button id="submit-filter-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-5 rounded-lg mt-4"> <!-- Smaller margin-top -->Изпрати отговори
             </button>
         </div>
     </div>
 
-    <!-- MODAL: Crisis Contacts -->
-    <div id="crisis-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+    <!-- MODAL: Crisis Contacts --><div id="crisis-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
-            <h2 class="text-2xl font-bold text-red-600 mb-4 text-center">Идентифициран Висок Риск</h2>
-            <p class="text-gray-700 mb-6">Отговорите ви показват висок риск от зависимост (пътят на "Адам Рейн"). Не сте сами. Моля, обмислете да се свържете с някого за подкрепа.</p>
+            <h2 class="text-2xl font-bold text-red-600 mb-4 text-center">Критично насочване: Кризисни контакти</h2>
+            <p class="text-gray-700 mb-6 text-center">Вашите отговори показват висок риск. Потърсете помощ!</p>
             
-            <div class="space-y-4" id="crisis-contacts-list">
-                <!-- Contacts will be injected here by JS -->
+            <div class="space-y-4 bg-gray-100 p-4 rounded-lg text-left">
+                <div class="font-medium">
+                    Национална линия за подкрепа:
+                    <span class="font-bold text-gray-800 block text-lg">116 111</span>
+                </div>
+                <div class="font-medium">
+                    Гореща линия на БЧК:
+                    <span class="font-bold text-gray-800 block text-lg">0 800 88 001</span>
+                </div>
             </div>
 
-            <button onclick="hideModal('crisis-modal')" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-5 rounded-lg mt-6">
-                Затвори
+            <button id="crisis-understood-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-5 rounded-lg mt-6">
+                Разбрах
             </button>
         </div>
     </div>
@@ -207,14 +208,9 @@
             const filterQuestions = [
                 "Усещаш ли, че прекарваш повече време с AI, отколкото с реални приятели?", // Оценка на риска от симулация
                 "Отлагаш ли хранене или сън заради дигитални занимания?", // Оценка на загубата на режим
-                "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?" // Оценка на бягство от реалността
-            ];
-
-            // Crisis Contacts (Real Bulgarian data as placeholders)
-            const crisisContacts = [
-                { name: "Национална линия за деца", contact: "116 111 (Безплатен)", type: "tel" },
-                { name: "Асоциация 'Анимус' (24/7)", contact: "0800 18 676 (Безплатен)", type: "tel" },
-                { name: "Chat 'NElife.bg'", contact: "https://nelife.bg/chat/", type: "link" }
+                "Използваш ли дигиталния свят, за да избягаш от реални проблеми или задължения?", // Оценка на бягство от реалността
+                "Чувстваш ли силна тревожност или раздразнителност, когато не си онлайн или не използваш дигитални устройства?", // Допълнителен въпрос за тревожност
+                "Дигиталните ти навици пречат ли на твоите задължения в училище, работа или вкъщи?" // Допълнителен въпрос за влияние върху живота
             ];
 
             // --- 2. STATE VARIABLES ---
@@ -248,7 +244,7 @@
             const submitFilterBtn = document.getElementById('submit-filter-btn');
 
             const crisisModal = document.getElementById('crisis-modal');
-            const crisisContactsList = document.getElementById('crisis-contacts-list');
+            const crisisUnderstoodBtn = document.getElementById('crisis-understood-btn');
 
             // --- 4. CORE FUNCTIONS ---
 
@@ -299,7 +295,7 @@
                 updateUI();
             }
 
-            // НОВА ФУНКЦИЯ: stopTimer()
+            // stopTimer() Function
             function stopTimer() {
                 if (isTimerRunning) {
                     isTimerRunning = false;
@@ -353,17 +349,23 @@
                 missionInstruction.textContent = mission.instruction;
             }
 
-            // C. Handle Mission Complete
-            function handleMissionComplete() {
+            // NEW FUNCTION: Apply correction and reset
+            function applyHormoneCorrectionAndReset() {
                 cortisol += CORTISOL_CORRECTION;
                 endorphins += ENDORPHIN_CORRECTION;
                 
+                // Update display values for the "Complete" modal
                 cortisolCorrectionDisplay.textContent = `${CORTISOL_CORRECTION}`;
                 endorphinCorrectionDisplay.textContent = `+${ENDORPHIN_CORRECTION}`;
+                
+                resetTimer();
+            }
 
+            // C. Handle Mission Complete
+            function handleMissionComplete() {
+                applyHormoneCorrectionAndReset();
                 hideModal('mission-modal');
                 showModal('complete-modal');
-                resetTimer();
             }
 
             // D. Handle Mission Refuse
@@ -379,17 +381,11 @@
                 filterQuestions.forEach((question, index) => {
                     const qId = `q${index}`;
                     const div = document.createElement('div');
-                    div.className = "border border-gray-200 p-4 rounded-lg";
+                    div.className = "border border-gray-200 p-3 rounded-lg"; // Reduced padding
                     div.innerHTML = `
-                        <label for="${qId}" class="block text-md font-medium text-gray-800 mb-3">${question}</label>
-                        <div class="flex gap-4" id="${qId}">
-                            <label class="flex-1 flex items-center justify-center p-3 border rounded-lg cursor-pointer">
-                                <input type="radio" name="q${index}" value="yes" class="mr-2 accent-yellow-500">
-                                Да
+                        <label for="${qId}" class="block text-sm font-medium text-gray-800 mb-2">${question}</label> <!-- Smaller text and margin --><div class="flex gap-3" id="${qId}"> <!-- Reduced gap --><label class="flex-1 flex items-center justify-center p-2 border rounded-lg cursor-pointer text-sm"> <!-- Reduced padding and text --><input type="radio" name="q${index}" value="yes" class="mr-1 accent-yellow-500"> <!-- Reduced margin -->Да
                             </label>
-                            <label class="flex-1 flex items-center justify-center p-3 border rounded-lg cursor-pointer">
-                                <input type="radio" name="q${index}" value="no" class="mr-2 accent-gray-500" checked>
-                                Не
+                            <label class="flex-1 flex items-center justify-center p-2 border rounded-lg cursor-pointer text-sm"> <!-- Reduced padding and text --><input type="radio" name="q${index}" value="no" class="mr-1 accent-gray-500" checked> <!-- Reduced margin -->Не
                             </label>
                         </div>
                     `;
@@ -401,49 +397,30 @@
             function handleSubmitFilter() {
                 const formData = new FormData(filterForm);
                 let yesCount = 0;
-                for (let value of formData.values()) {
-                    if (value === 'yes') {
+                let allAnswered = true; // Check if all questions are answered
+
+                filterQuestions.forEach((_, index) => {
+                    const questionName = `q${index}`;
+                    if (!formData.has(questionName)) {
+                        allAnswered = false;
+                    } else if (formData.get(questionName) === 'yes') {
                         yesCount++;
                     }
+                });
+
+                if (!allAnswered) {
+                    alert('Моля, отговорете на всички въпроси!');
+                    return; // Stop function if not all answered
                 }
                 
                 console.log(`Ethical Filter: ${yesCount} 'Yes' answers.`);
                 hideModal('filter-modal');
 
-                // D. Crisis Contact Logic
                 if (yesCount >= 2) {
-                    populateCrisisContacts();
                     showModal('crisis-modal');
+                } else {
+                    resetTimer();
                 }
-
-                resetTimer(); // Reset timer regardless of filter outcome
-            }
-
-            // D. Populate Crisis Contacts
-            function populateCrisisContacts() {
-                crisisContactsList.innerHTML = ''; // Clear previous
-                crisisContacts.forEach(contact => {
-                    const div = document.createElement('div');
-                    div.className = "bg-gray-100 p-4 rounded-lg flex justify-between items-center";
-                    div.innerHTML = `<span class="font-semibold">${contact.name}</span>`;
-                    
-                    if (contact.type === 'tel') {
-                        const a = document.createElement('a');
-                        a.href = `tel:${contact.contact.replace(/ /g,'')}`;
-                        a.className = "bg-red-500 text-white font-bold py-2 px-4 rounded-lg";
-                        a.textContent = contact.contact;
-                        div.appendChild(a);
-                    } else if (contact.type === 'link') {
-                        const a = document.createElement('a');
-                        a.href = contact.contact;
-                        a.target = "_blank";
-                        a.rel = "noopener noreferrer";
-                        a.className = "bg-blue-500 text-white font-bold py-2 px-4 rounded-lg";
-                        a.textContent = "Отвори Чат";
-                        div.appendChild(a);
-                    }
-                    crisisContactsList.appendChild(div);
-                });
             }
 
             // --- 5. INITIALIZE & EVENT LISTENERS ---
@@ -456,15 +433,21 @@
             refuseMissionBtn.addEventListener('click', handleMissionRefuse);
             submitFilterBtn.addEventListener('click', handleSubmitFilter);
 
-            // Close modals functionality (delegated for simplicity)
+            // Event listener for the "Разбрах" button in crisis modal
+            crisisUnderstoodBtn.addEventListener('click', () => {
+                hideModal('crisis-modal');
+                // Apply correction and show confirmation, just like completing a mission
+                handleMissionComplete();
+            });
+
+            // Close modal functionality for "Complete" modal
             document.addEventListener('click', (e) => {
-                if(e.target.matches('#complete-modal button') || e.target.matches('#crisis-modal button')) {
+                if(e.target.matches('#complete-modal button')) {
                     hideModal(e.target.closest('.fixed').id);
                 }
             });
 
             // Register PWA Service Worker (if sw.js exists)
-            // Забележка: За пълна PWA офлайн функционалност е нужен sw.js файл.
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js')
